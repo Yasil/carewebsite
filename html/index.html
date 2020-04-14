@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>监控后台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/lau/lau.css">
+    <script>(window.top === window.self) || (window.top.location.href = window.self.location.href);</script>
+</head>
+<body class="layui-layout-body layui-unselect">
+<div class="layui-layout layui-layout-admin">
+    <!--顶部导航开始-->
+    <div class="layui-header">
+        <a class="lau-logo-mini"><i class="layui-icon layui-icon-release"></i></a>
+        <a class="layui-logo">监控系统</a>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item" lay-unselect>
+                <a href="javascript:;"><img src="/static/img/faceid.jpg" class="layui-nav-img"> 管理员 </a>
+                <dl class="layui-nav-child">
+                    <dd><a lau-event="logout">安全退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-unselect><a lau-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a></li>
+        </ul>
+    </div>
+    <!--顶部导航结束-->
+
+    <!--侧边菜单开始-->
+    <div class="layui-side" data-href="/json/menu.json">
+        <div class="lau-side-fold"><i class="layui-icon layui-icon-shrink-right"></i></div>
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree">
+                <!--这里可以写菜单结构,也可以放空,使用异步加载-->
+            </ul>
+        </div>
+    </div>
+    <!--侧边菜单结束-->
+
+    <!--内容主体区域开始-->
+    <!-- <div class="layui-body" data-type="" data-title="控制台" data-icon="layui-icon-home" data-href="/html/console.html"></div> -->
+    <div class="layui-body" data-type="" data-title="监控列表" data-icon="layui-icon-home" data-href="./monitor/urllist.html"></div>
+
+    <!--内容主体区域结束-->
+</div>
+</body>
+<script src="/static/layui/layui.js"></script>
+<script>
+function checkStorageSupport()
+{
+    // sessionStorage
+    if (window.sessionStorage) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+    layui.config({base: '/static/'}).extend({lau: 'lau/lau'}).use(['lau'], function () {
+        var lau = layui.lau,
+            layer = layui.layer,
+            $ = layui.$;
+
+        if(!checkStorageSupport()){
+            layer.open({
+              title:"browser Warning",
+              content: '<div><h3>Your browser don\'t support sessionStorage! please user chrome or else</h3></div>',
+              yes: function(index, layero){
+                //do something
+                layer.close(index); 
+                window.location.href='https://www.google.com/chrome/';
+              }
+            }); 
+        }
+
+        $(document).on('click', '[lau-event]', function () {
+            var _this = $(this);
+            switch (_this.attr('lau-event')) {
+                case 'about':
+                    $.get('/html/about.html', function (html) {
+                        lau.drawer({content: html});
+                    });
+                    break;
+
+                case 'logout':
+                    st = window.sessionStorage;
+                    session = st.getItem("session");
+                    st.clear();
+                    $.post('/logout',{"session":session}, function (html) {
+                        window.location.href='/html/login.html';
+                    });
+                    break;
+            }
+        });
+    });
+
+</script>
+</html>

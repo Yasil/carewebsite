@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>监控列表</title>
+  <link rel="stylesheet" href="/static/layui/css/layui.css">
+  <link rel="stylesheet" href="/static/css/common.css">
+</head>
+<body>
+ <div class="layui-fluid">
+  <button class="layui-btn" lay-submit lay-filter="addurl">添加URL</button>
+</form>
+</div>      
+<table id="alerturllist" class="layui-table" lay-filter="urllistevent"></table>
+
+
+<!-- <script type="text/html" id="titleTpl">
+  <a class="layui-table-link" lay-event="detail">{{d.name}}</a>
+</script>
+ -->
+ <div id="addurlform" style="display:none;">
+ <form class="layui-form" action="">
+  <label class="layui-form-label"></label>
+  <div class="layui-form-item">
+    <label class="layui-form-label">名称</label>
+    <div class="layui-input-inline" style="width: 200px;">
+      <input type="text" name="name" required  lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">URL地址</label>
+    <div class="layui-input-inline" style="width: 500px;">
+      <input type="text" name="url" required  lay-verify="required" placeholder="请输入URL" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">请求方式</label>
+    <div class="layui-input-inline">
+      <select name="method" lay-verify="required">
+        <option value=""></option>
+        <option value="get">get</option>
+        <option value="post">post</option>
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">POST内容</label>
+    <div class="layui-input-inline" style="width: 500px;">
+      <textarea name="postdata" placeholder="请输入post内容" class="layui-textarea"></textarea>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">预警:返回码</label>
+    <div class="layui-input-inline">
+      <input type="text" name="status" placeholder="请输入返回码" value="200" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">预警:关键词</label>
+    <div class="layui-input-inline" style="width: 500px;">
+      <input type="text" name="keyword" placeholder="请输入匹配关键词" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">预警:超    时</label>
+    <div class="layui-input-inline">
+      <input type="text" name="timeout" placeholder="请输入超时时间(毫秒)" value="1000" autocomplete="off" class="layui-input">
+    </div>
+    <label class="layui-form-label" style="text-align: left;">(毫秒)</label>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">访问间隔</label>
+    <div class="layui-input-inline">
+      <input type="text" name="integer" required  lay-verify="required" placeholder="间隔时间(秒)" value="60" autocomplete="off" class="layui-input">
+    </div>
+    <label class="layui-form-label" style="text-align: left;">(秒)</label>
+
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label"></label>
+    <div class="layui-input-inline">
+      <button class="layui-btn" lay-submit lay-filter="urladdformevent">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+</div>
+
+<script src="/static/layui/layui.js"></script>
+<script type="text/html" id="urltoolbar">
+  <div class="layui-btn-container">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+  </div>
+</script>
+
+<script>
+function timestampToTime(timestamp) {
+  var  date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+  var Y = date.getFullYear() + '-';
+  var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+  var D = date.getDate() + ' ';
+  var h = date.getHours() + ':';
+  var m = date.getMinutes() + ':';
+  var s = date.getSeconds();
+  return Y+M+D+h+m+s;
+}
+
+
+
+layui.use(['table','form'], function(){
+  var table = layui.table;
+  var layer = layui.layer;
+  var form = layui.form;
+  var $ = layui.$;
+  //第一个实例
+  table.render({
+    elem: '#alerturllist'
+    ,height: 600 //容器高度
+    ,url: '/api/urls' //数据接口
+    ,page: true //开启分页
+    // ,toolbar: '#toolbarDemo'
+    ,cols: [[
+        {field: 'id',  minWidth:30, title: 'id', fixed: 'left'},
+        {field: 'name', minWidth:100, title: 'name', templet:"#titleTpl" },
+        {field: 'url', minWidth:150, title: 'url'},
+        {field: 'method', minWidth:100, title: 'method'},
+        {field: 'postdata', minWidth:100, title: 'postdata'},
+        {field: 'status', minWidth:30, title: 'status'},
+        {field: 'keyword', minWidth:100, title: 'keyword'},
+        {field: 'timeout', minWidth:30, title: 'timeout'},
+        {field: 'integer', minWidth:30, title: 'integer'},
+        {field: 'createtime', minWidth:30, title: 'createtime', templet: function (d) {
+            return timestampToTime(d.createtime);
+        }},
+        {fixed: 'right', width:150, align:'center', toolbar: '#urltoolbar'},
+    ]]
+  });
+
+
+  table.on('tool(urllistevent)', function(obj){
+    var data = obj.data; 
+    var layEvent = obj.event;
+    switch(obj.event){
+      case 'detail':
+        layer.open({
+          type: 2
+          ,offset: ['50px', '200px']
+          ,area: ['700px', '500px']
+          ,content: ['/monitor/chart.html?id=' + data.id, 'no']
+        });
+        break;
+      case 'del':
+        layer.open({
+          content: '是否删除'
+          ,btn: ['是', '否']
+          ,yes: function(index, layero){
+            // layer.msg("删除");
+            // console.log("delete", data.id);
+            $.post('/api/url/delete', {"id":data.id}, function(str){
+                layer.close(index);
+                table.reload('alerturllist');
+            });
+            //按钮【按钮一】的回调
+          }
+          ,no: function(index, layero){
+          }
+        });
+        break;
+    };
+  });
+  // tableIns.reload({
+  //   where: { 
+  //     aaaaaa: 'xxx'
+  //     ,bbb: 'yyy'
+  //     //…
+  //   }
+  //   ,page: {
+  //     curr: 1 //start page 1
+  //   }
+  // });
+  form.on('submit(addurl)', function(data){
+    //添加URL弹窗
+     layer.open({
+        type: 1
+        ,title:"添加URL"
+        ,offset: ['50px', '250px']
+        ,area: ['700px', '630px']
+        ,content: $('#addurlform')
+        ,end: function(index, layero){ 
+                    // location.reload();
+                      table.reload('alerturllist');
+                      // layer.close(index);
+                  }
+        });
+
+    return false;
+
+  });
+
+  form.on('submit(urladdformevent)', function(data){
+    // 添加URL数据提交
+    // layer.msg(JSON.stringify(data.field));
+    $.post('/api/url/add', data.field, function(str){
+        layer.closeAll();
+    });
+    return false;
+  });
+
+
+});
+
+
+</script>
+</body>
+</html>

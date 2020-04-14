@@ -1,0 +1,103 @@
+<html>
+<head>
+   <meta charset="UTF-8" />
+   <title>history</title>
+   <script src="/static/js/jquery.min.js"></script>
+   <script src="/static/js/highcharts.js"></script>
+</head>
+<body>
+<div id="container" style="width: 650px; height: 400px; margin: 0 auto"></div>
+<script language="JavaScript">
+
+function getQueryVariable(variable){
+       let query = window.location.search.substring(1);
+       let vars = query.split("&");
+       for (let i=0;i<vars.length;i++) {
+               let pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+
+function timestampToTime(timestamp) {
+  var  date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+  var Y = date.getFullYear() + '-';
+  var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+  var D = date.getDate() + ' ';
+  var h = date.getHours() + ':';
+  var m = date.getMinutes() + ':';
+  var s = date.getSeconds();
+  return Y+M+D+h+m+s;
+}
+
+const average = (...arr) => {
+  const nums = [].concat(...arr);
+  return nums.reduce((acc, val) => acc + val, 0) / nums.length;
+};
+
+$(document).ready(function() {
+  $.get('/api/urldetail?id=' + getQueryVariable("id") , function (html) {
+    jobj = JSON.parse(html);
+    var categ = new Array();
+    var timedata = new Array();
+    jobj.data.forEach(function(item) {
+        // console.log(item);
+        categ.push(timestampToTime(item.createtime));
+        timedata.push(item.resp_time);
+    })
+
+    var title = {
+       text: '平均访问时间'   
+    };
+    var subtitle = {
+        text: '平均时间：' + average(timedata)
+    };
+    var xAxis = {
+       categories:categ.reverse()
+    };
+    var yAxis = {
+      title: {
+         text: '毫秒'
+      },
+      plotLines: [{
+         value: 0,
+         width: 1,
+         color: '#808080'
+      }]
+    };   
+
+    var tooltip = {
+      valueSuffix: '(ms)'
+    }
+
+    var legend = {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
+      borderWidth: 0
+    };
+
+    var series =  [
+      {
+         name: 'url',
+         data: timedata.reverse()
+      }
+    ];
+
+
+    var json = {};
+
+    json.title = title;
+    json.subtitle = subtitle;
+    json.xAxis = xAxis;
+    json.yAxis = yAxis;
+    json.tooltip = tooltip;
+    json.legend = legend;
+    json.series = series;
+
+    $('#container').highcharts(json);
+  });
+});
+</script>
+</body>
+</html>

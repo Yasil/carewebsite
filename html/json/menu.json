@@ -1,0 +1,20 @@
+[[{
+  "title": "监控模块",
+  "open": true,
+  "list": [{
+    "title": "监控列表",
+    "href": "/monitor/urllist.html"
+  }, {
+    "title": "告警列表",
+    "href": "/monitor/alertlist.html"
+  }, {
+    "title": "访问历史",
+    "href": "/monitor/history.html"
+  }]
+},
+{
+  "title": "用户",
+  "icon": "layui-icon-home",
+  "href": "/monitor/user.html"
+}
+]]

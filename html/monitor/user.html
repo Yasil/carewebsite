@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>User list</title>
+  <link rel="stylesheet" href="/static/layui/css/layui.css">
+  <link rel="stylesheet" href="/static/css/common.css">
+</head>
+<body>
+<div class="layui-fluid">
+  <button class="layui-btn" lay-submit lay-filter="adduser">Add user</button>
+</form>
+</div>      
+<table id="user" lay-filter="userlistevent"></table>
+
+ <div id="adduserform" style="display:none;">
+ <form class="layui-form" action="">
+  <label class="layui-form-label"></label>
+  <div class="layui-form-item">
+    <label class="layui-form-label">username</label>
+    <div class="layui-input-inline" style="width: 200px;">
+      <input type="text" name="username" required  lay-verify="required" placeholder="input username" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">password</label>
+    <div class="layui-input-inline" style="width: 200px;">
+      <input type="password" name="password" required lay-verify="required" placeholder="input password" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">mail</label>
+    <div class="layui-input-inline" style="width: 200px;">
+      <input type="text" name="mail" required  lay-verify="required" placeholder="input email" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">phone</label>
+    <div class="layui-input-inline" style="width: 200px;">
+      <input type="text" name="phone" required  lay-verify="required" placeholder="input phone number" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label"></label>
+    <div class="layui-input-inline">
+      <button class="layui-btn" lay-submit lay-filter="useraddformevent">Submit</button>
+      <button type="reset" class="layui-btn layui-btn-primary">Reset</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+
+<script src="/static/layui/layui.js"></script>
+<script src="/static/layui/layui.js"></script>
+<script type="text/html" id="usertoolbar">
+  <div class="layui-btn-container">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">Delete</a>
+  </div>
+</script>
+
+
+<script>
+function timestampToTime(timestamp) {
+  var  date = new Date(timestamp*1000);
+  var Y = date.getFullYear() + '-';
+  var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+  var D = date.getDate() + ' ';
+  var h = date.getHours() + ':';
+  var m = date.getMinutes() + ':';
+  var s = date.getSeconds();
+  return Y+M+D+h+m+s;
+}
+layui.use(['table','form'], function(){
+  var table = layui.table;
+  var layer = layui.layer;
+  var form = layui.form;
+  var $ = layui.$;
+
+  table.render({
+    elem: '#user'
+    ,height: 600 
+    ,url: '/api/users' 
+    ,page: true 
+    ,cols: [[
+        {field: 'id', title: 'id', type: 'numbers', fixed: 'left'},
+        {field: 'username', title: 'username'},
+        {field: 'mail', title: 'mail', width:150},
+        {field: 'phone', title: 'phone', sort: true},
+        {field: 'createtime', title: 'createtime', templet: function (d) {
+            return timestampToTime(d.createtime);
+        }},
+        {fixed: 'right', width:150, align:'center', toolbar: '#usertoolbar'}
+    ]]
+  });
+
+  table.on('tool(userlistevent)', function(obj){
+    var data = obj.data; 
+    var layEvent = obj.event;
+    switch(obj.event){
+      case 'del':
+        layer.open({
+          content: 'Is delete?'
+          ,btn: ['Yes', 'No']
+          ,yes: function(index, layero){
+            // console.log("delete", data.id);
+            $.post('/api/user/delete', {"id":data.id}, function(str){
+                layer.close(index);
+                table.reload('user');
+            });
+            //button one callback
+          }
+          ,no: function(index, layero){
+          }
+        });
+        break;
+      };
+  });
+
+
+  form.on('submit(adduser)', function(data){
+  //add user pop
+   layer.open({
+      type: 1
+      ,title:"Add user"
+      ,offset: ['50px', '250px']
+      ,area: ['400px', '350px']
+      ,content: $('#adduserform')
+      ,end: function(index, layero){ 
+                  // location.reload();
+                    table.reload('user');
+                    // layer.close(index);
+                }
+      });
+    return false;
+  });
+
+  form.on('submit(useraddformevent)', function(data){
+    // add user submit
+    // layer.msg(JSON.stringify(data.field));
+    $.post('/api/user/add', data.field, function(str){
+        layer.closeAll();
+    });
+    return false;
+  });
+});
+</script>
+</body>
+</html>
