@@ -26,14 +26,14 @@ carewebsite,是一个基于python3标准库构建的极简网站和api监控工�
   - linux:  
       安装python3,运行 python site.py(注意：linux 需要支持ssl和sqlite3. 测试import ssl 和 import sqlite3 是否正常)
   
-  - 3 使用:   
-    1 打开 http://localhost:8080/ 或 http://ip:8080/ , 默认账号admin,密码:123456
-    2 可删除默认账号，新增账号和邮箱（用于预警）
-    3 增加URL监控.
+- 3 使用:   
+  1 打开 http://localhost:8080/ 或 http://ip:8080/ , 默认账号admin,密码:123456  
+  2 可删除默认账号，新增账号和邮箱（用于预警）  
+  3 增加URL监控.  
 
 # carewebsite运行截图
-  ![https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101233.png](carewebsite01)
-  ![https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101319.png](carewebsite02)
+  ![01](https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101233.png)
+  ![02](https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101319.png)
 
 # FAQ
   有问题或建议请反馈到issues,或者直接pull上来！
