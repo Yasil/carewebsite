@@ -50,14 +50,14 @@ $(document).ready(function() {
        text: '平均访问时间'   
     };
     var subtitle = {
-        text: '平均时间：' + average(timedata)
+        text: '平均时间：' + average(timedata) + '(ms)'
     };
     var xAxis = {
        categories:categ.reverse()
     };
     var yAxis = {
       title: {
-         text: '毫秒'
+         text: '毫秒(ms)'
       },
       plotLines: [{
          value: 0,

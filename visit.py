@@ -54,5 +54,6 @@ if __name__ == '__main__':
     # print(result)
     # query_args = {'username': 'admin', 'password':'123456'}
     # result = visit_site('http://localhost:8080/api/loginpost', 'post', query_args)
+    # result = visit_site('https://www.xiatianip.com/', 'get', keyword="372198644")
     # print(result)
     pass

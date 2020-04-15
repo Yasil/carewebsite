@@ -69,13 +69,13 @@ def run_monitor():
 def check_site(uid, urlinfo):
     # 校验网站访问是否需要
     lasttime = urlinfo.get("visittime")
-
+    keyword = urlinfo.get('keyword').strip()
     now = tstamp()
     if now - lasttime <= urlinfo.get('integer'):
         # 未过间隔期
         return
     urlinfo.update(visittime=tstamp())
-    success, code, keyresult, spendtime = visit_site(urlinfo.get('url'), urlinfo.get('method'), urlinfo.get('postdata'))
+    success, code, keyresult, spendtime = visit_site(urlinfo.get('url'), urlinfo.get('method'), urlinfo.get('postdata'), keyword=keyword)
     result = ''
     logger.info("URL:{}, 返回码:{}, 匹配结果:{}, 耗时:{}".format(urlinfo.get('url'), code, keyresult, spendtime))
     url_status, key_status, t_status, err_status = 0,0,0,0
@@ -87,28 +87,29 @@ def check_site(uid, urlinfo):
             result += 'code ok.'
         else:
             url_status = 2000
-            result += 'error code:{}!'.format(code)
+            result += 'Error code:{}!'.format(code)
 
-        if urlinfo.get('keyword') != '':
+        if keyword != '':
+            logger.debug("Keyword:{}".format(keyword))
             if keyresult:
                 # 关键词
                 key_status = 10
-                result += 'keyword ok.'
+                result += 'Keyword ok.'
             else:
                 key_status = 20
-                result += 'can\'t find keyword!'
+                result += 'Can\'t find keyword!'
 
         if urlinfo.get('timeout') != '':
             if spendtime < urlinfo.get('timeout'):
                 t_status = 1
-                result += 'time ok.'
+                result += 'Time ok.'
             else:
                 t_status = 2
-                result += 'timeout!'
+                result += 'Timeout!actual:{}'.format(spendtime)
     else:
         if code == 0:
             err_status = -1
-            result += "can't open url!"
+            result += "Can't open url!"
         else:
             pass
     status = url_status + key_status + t_status + err_status
@@ -117,7 +118,7 @@ def check_site(uid, urlinfo):
     db.visit_history_insert(visitinfo)
     if url_status>1000 or key_status>10 or t_status>1:
         # 异常发送邮件或者短信提醒
-        title = "website visit exception:{}".format(urlinfo.get('name'))
+        title = "访问异常:{}".format(urlinfo.get('name'))
         message = "status:{}\nurl:{}\nmessage:\n{}".format(status, urlinfo.get('url'), result)
         alert_email(uid, urlinfo.get('url'), title, message)
 

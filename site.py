@@ -174,6 +174,12 @@ def urladd():
     addurl = dict(request.forms)
     name = request.forms.getunicode("name")
     addurl.update(name=name)
+    keyword = request.forms.getunicode("keyword")
+    addurl.update(keyword=keyword)
+    post = request.forms.getunicode("post")
+    addurl.update(post=post)
+    url = request.forms.getunicode("url")
+    addurl.update(url=url)
     web_url_add(addurl)
     return json_resp(0,'ok')
 

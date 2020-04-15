@@ -1,5 +1,7 @@
-#coding=utf-8
+# -*- coding: utf-8 -*-
 from smtplib import SMTP_SSL
+import email.utils
+from email.mime.text import MIMEText
 import log
 from tool import read_config
 
@@ -14,21 +16,21 @@ def send_email(title, msg, receivers):
     #smtp server pw
     pwd = dmail.get('mail_server_pw')
 
-    message = """From: From Person <{0}>
-To: To Person <all@monitor.com>
-Subject: {1}
-
-{2}
-"""
+    message = MIMEText(msg)
+    # message['To'] = email.utils.formataddr(('Recipient','recipient@example.com'))
+    message['From'] = email.utils.formataddr(('websiteadmin',sender))
+    message['Subject'] = title
     try:
         smtp = SMTP_SSL(host_server)
         #set_debuglevel()是用来调试的。参数值为1表示开启调试模式，参数值为0关闭调试模式
         smtp.set_debuglevel(0)
         smtp.ehlo(host_server)
         smtp.login(sender, pwd)
-        message = message.format(sender, title, msg)
-        smtp.sendmail(sender, receivers, message)
+        smtp.sendmail('flowdata@qq.com',
+                receivers,
+                message.as_string())
         smtp.quit()
+
     except Exception as e:
         logger.error("send email fail:{}".format(e))
         return False, e
@@ -40,4 +42,5 @@ Subject: {1}
         # print("结束")
 
 if __name__ == '__main__':
-    send_email('site warning', 'site can\'t vists', 'flowdata@qq.com')
+    # send_email('测试错误', '网站访问错误site can\'t vists', ['flowdata@qq.com'])
+    pass
