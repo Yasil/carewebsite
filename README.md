@@ -20,11 +20,11 @@ carewebsite,是一个基于python3标准库构建的极简网站和api监控工�
   
 - 2 运行:  
   - windows:  
-      安装python3,运行 python site.py
+      安装python3,运行 python run.py
   - mac:  
-      安装python3,运行 python site.py
+      安装python3,运行 python run.py
   - linux:  
-      安装python3,运行 python site.py(注意：linux 需要支持ssl和sqlite3. 测试import ssl 和 import sqlite3 是否正常)
+      安装python3,运行 python run.py(注意：linux 需要支持ssl和sqlite3. 测试import ssl 和 import sqlite3 是否正常)
   
 - 3 使用:   
   1 打开 http://localhost:8080/ 或 http://ip:8080/ , 默认账号admin,密码:123456  
