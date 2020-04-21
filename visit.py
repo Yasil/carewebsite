@@ -1,5 +1,4 @@
-
-
+# -*- coding:utf-8 -*-  
 from urllib import parse
 from urllib import request
 from urllib.error import URLError, HTTPError

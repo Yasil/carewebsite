@@ -221,24 +221,10 @@ def hisempty():
     return json_resp(0,'ok')
 
 
-if __name__ == '__main__':
-    from monitor import run_monitor
-    import threading
-    monitor = threading.Thread(target=run_monitor, args=(), name="monitor")
-    monitor.start()
+def run_web_site():
+    ''' run web site '''
     run(host='', port=8080)
 
 
-    # print(json_resp(0,"登录成功"))
-    # print(get_md5('123456'))
-    # print(check_user('admin','123456'))
-    # s = create_session("hello")
-    # print(s)
-    # print(session_dict)
-    # import time
-    # time.sleep(3)
-    # r = check_session(str(s))
-    # print(r)
-    # print(session_dict)
-
-
+if __name__ == '__main__':
+    pass
