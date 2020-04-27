@@ -34,7 +34,7 @@ carewebsite,是一个基于python3标准库构建的极简网站和api监控工�
 # carewebsite运行截图
   ![01](https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101233.png)  
   
-  ![02](https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101319.png)
+  ![02](https://github.com/Yasil/carewebsite/blob/master/cutimg/20200414101233.png)
 
 # FAQ
   有问题或建议请反馈到issues,或者直接pull上来！
