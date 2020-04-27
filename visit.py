@@ -38,6 +38,9 @@ def visit_site(url, v_type='get', postdata=None, keyword=None):
     except ValueError as e:
         logger.error('{}:URL vlaue error:{}'.format(url, e))
         return False, 0, False, 0
+    except Exception as e:
+        logger.error('{}: unknow error:{}'.format(url, e))
+        return False, 0, False, 0
     else:
         end = get_now_milli_time()
         logger.info('{}:OK'.format(url))
@@ -56,3 +59,9 @@ if __name__ == '__main__':
     # result = visit_site('https://www.xiatianip.com/', 'get', keyword="372198644")
     # print(result)
     pass
+    # try:
+    #     1/0
+    # # except ZeroDivisionError as e:
+    # #     print(e)
+    # except Exception as e:
+    #     print("error", e)
